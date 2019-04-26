@@ -10,10 +10,15 @@
 
 Summary: %{vendor_name} %{driver_name} device drivers
 Name: %{vendor_label}-%{driver_name}
-Version: 5.3.5.3
-Release: 2%{?dist}
+Version: 5.3.5.20
+Release: 1%{?dist}
 License: GPL
-Source: https://code.citrite.net/rest/archive/latest/projects/XS/repos/driver-%{name}/archive?at=%{version}&format=tar.gz&prefix=driver-%{name}-%{version}#/%{name}.tar.gz
+
+Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/driver-intel-igb/archive?at=5.3.5.20&format=tar.gz&prefix=driver-intel-igb-5.3.5.20#/intel-igb.tar.gz
+
+
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/driver-intel-igb/archive?at=5.3.5.20&format=tar.gz&prefix=driver-intel-igb-5.3.5.20#/intel-igb.tar.gz) = 8875494a986ffff5f1927dd132b0b6f9e15aca8f
+
 
 BuildRequires: kernel-devel
 Provides: vendor-driver
