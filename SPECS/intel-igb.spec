@@ -1,8 +1,8 @@
-%global package_speccommit b8cc4802e5a51db97d9e6c1a5a4a03f212e5dfd6
-%global usver 5.3.5.20
-%global xsver 3
+%global package_speccommit 1c40a02055bde96499f2ae25149cfc0662b55e31
+%global usver 5.13.20
+%global xsver 2
 %global xsrel %{xsver}%{?xscount}%{?xshash}
-%global package_srccommit 5.3.5.20
+%global package_srccommit 5.13.20
 %define vendor_name Intel
 %define vendor_label intel
 %define driver_name igb
@@ -22,10 +22,11 @@
 
 Summary: %{vendor_name} %{driver_name} device drivers
 Name: %{vendor_label}-%{driver_name}
-Version: 5.3.5.20
+Version: 5.13.20
 Release: %{?xsrel}%{?dist}
 License: GPL
 Source0: intel-igb.tar.gz
+Patch0: igb-WoL-update.patch
 
 BuildRequires: kernel-devel
 %{?_cov_buildrequires}
@@ -43,6 +44,9 @@ version %{kernel_version}.
 %{?_cov_prepare}
 
 %build
+cd src
+KSRC=/lib/modules/%{kernel_version}/build OUT=kcompat_generated_defs.h CONFFILE=/lib/modules/%{kernel_version}/build/.config bash kcompat-generator.sh
+cd ..
 %{?_cov_wrap} %{make_build} -C /lib/modules/%{kernel_version}/build M=$(pwd)/src KSRC=/lib/modules/%{kernel_version}/build modules
 
 %install
@@ -76,6 +80,12 @@ find %{buildroot}/lib/modules/%{kernel_version} -name "*.ko" -type f | xargs chm
 %{?_cov_results_package}
 
 %changelog
+* Wed Aug 02 2023 Stephen Cheng <stephen.cheng@citrix.com> - 5.13.20-2
+- CA-380604: Fix WoL defaults for I350 to be compatible with old OEM igb and upstream
+
+* Tue Jul 18 2023 Stephen Cheng <stephen.cheng@citrix.com> - 5.13.20-1
+- CP-42529: Update to version 5.13.20
+
 * Mon Feb 14 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 5.3.5.20-3
 - CP-38416: Enable static analysis
 

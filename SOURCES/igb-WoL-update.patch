@@ -1,0 +1,52 @@
+commit c6c51f2538f130311359273012b2e095b46a1ea5
+Author: Bernhard Kaindl <bernhard.kaindl@cloud.com>
+Date:   Fri Aug 4 11:50:11 2023 +0200
+
+    Fix WoL defaults for I350 to be compatible with old OEM igb and upstream
+    
+    Linux upstream igb and old OEM igb drivers like igb-5.3.5.20
+    of XenSever 8.2 and before enable Wake-on-LAN by Magic Packet
+    by default (verified on two SuperMicro blades with I350 NICs)
+    
+    Newer Intel OEM igb drivers break with this tradition.
+    
+    This break of tradition breaks a XenRT test for Wake-on-LAN by
+    Magic Packet which uses an I350 NIC on a SuperMicro MicroBlade.
+    
+    Fix this testcase by keeping the default of Wake-on-LAN by Magic Packet
+    in the drvier like upstream Linux has, at least for I350 adapters which
+    support it.
+    
+    Disclaimer:
+    
+    The newer OEM igb drivers implement WoL for I210 differently using
+    EEPROM reads and writes for getting and setting WoL by Magic Packet:
+    
+    We should consult with Intel on wether it would be OK to enable
+    WoL by default for I210 in the same way on those.
+    
+    Signed-off-by: Bernhard Kaindl <bernhard.kaindl@cloud.com>
+
+diff --git a/src/igb_main.c b/src/igb_main.c
+index ca98377..b0f034d 100644
+--- a/src/igb_main.c
++++ b/src/igb_main.c
+@@ -3156,6 +3156,16 @@ static int igb_probe(struct pci_dev *pdev,
+                        E1000_WUFC_BC |
+                        E1000_WUFC_MAG |
+                        E1000_WUFC_LNKC);
++		/*
++		 * Fix WoL defaults for I350 to be compatible with old OEM igb and
++		 * Linux upstream, at least for the I350 family
++		 * (Default for I210 to be investiated with Intel):
++		 *
++		 * For compatiblity with Linux upstram igb and old OEM igb drivers
++		 * like igb-5.3.5.20 of xs82, this line enables WoL by Magic Packet
++		 * when supported by HW (unless overridden, see below):
++		 */
++		adapter->wol |= E1000_WUFC_MAG;
+ 
+ 		if (hw->mac.type == e1000_i210) {
+ 			u16 nvm_word;
+
+
