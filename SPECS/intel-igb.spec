@@ -23,7 +23,7 @@
 Summary: %{vendor_name} %{driver_name} device drivers
 Name: %{vendor_label}-%{driver_name}
 Version: 5.13.20
-Release: %{?xsrel}.0.kernelpreview.1%{?dist}
+Release: %{?xsrel}.0.kernelpreview.1.0.testv0.1%{?dist}
 License: GPL
 Source0: intel-igb.tar.gz
 Patch0: igb-WoL-update.patch
