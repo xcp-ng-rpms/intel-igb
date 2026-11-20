@@ -23,13 +23,13 @@
 Summary: %{vendor_name} %{driver_name} device drivers
 Name: %{vendor_label}-%{driver_name}
 Version: 5.13.20
-Release: %{?xsrel}%{?dist}
+Release: %{?xsrel}.0.kernelpreview.1%{?dist}
 License: GPL
 Source0: intel-igb.tar.gz
 Patch0: igb-WoL-update.patch
 
 BuildRequires: gcc
-BuildRequires: kernel-devel
+BuildRequires: kernel-devel >= 4.19.325-cip137.8.0.46.16
 %{?_cov_buildrequires}
 Provides: vendor-driver
 Requires: kernel-uname-r = %{kernel_version}
@@ -81,6 +81,9 @@ find %{buildroot}/lib/modules/%{kernel_version} -name "*.ko" -type f | xargs chm
 %{?_cov_results_package}
 
 %changelog
+* Mon Nov 16 2026 Quentin Casasnovas <quentin.casasnovas@vates.tech> - 5.13.20-2.0.kernelpreview.1
+- Rebuild for kernel v4.19.325-cip137
+
 * Wed Aug 02 2023 Stephen Cheng <stephen.cheng@citrix.com> - 5.13.20-2
 - CA-380604: Fix WoL defaults for I350 to be compatible with old OEM igb and upstream
 
